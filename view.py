@@ -22,31 +22,6 @@ from PySide2.QtGui import QIcon, QFont, QPixmap
 from management import DatabaseManager
 from main_window import MainWindow
 
-
-# class PasswordEdit(QLineEdit):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.setEchoMode(QLineEdit.Password)
-#
-#         self.toggle_icon = QAction(self)
-#         self.toggle_icon.setIcon(
-#             QIcon("C://Users//DUR//Desktop//postgresql//exam3//visible.png")
-#         )  # Göster iconunun yolu
-#         self.toggle_icon.triggered.connect(self.toggle_password_visibility)
-#         self.addAction(self.toggle_icon, QLineEdit.TrailingPosition)
-#
-#     def toggle_password_visibility(self):
-#         if self.echoMode() == QLineEdit.Password:
-#             self.setEchoMode(QLineEdit.Normal)
-#             self.toggle_icon.setIcon(
-#                 QIcon("C://Users//DUR//Desktop//postgresql//exam3//invisible.png")
-#             )  # Gizle iconunun yolu
-#         else:
-#             self.setEchoMode(QLineEdit.Password)
-#             self.toggle_icon.setIcon(
-#                 QIcon("C://Users//DUR//Desktop//postgresql//exam3//visible.png")
-#             )
-
 class PasswordEdit(QLineEdit):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

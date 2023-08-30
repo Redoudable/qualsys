@@ -1,18 +1,6 @@
 import sys
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-    QFrame,
-    QDialog,
-    QDesktopWidget,
-    QSpacerItem,
-    QSizePolicy,
-)
+from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget, QFrame, QDialog, QDesktopWidget, QSpacerItem, QSizePolicy
 
 
 class MainWindow(QMainWindow):
@@ -40,9 +28,8 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         layout = QVBoxLayout(self.central_widget)
 
-        self.menu_button = QPushButton("Ana Menü")
-        self.menu_button.setStyleSheet(
-            """
+        self.menu_button = QPushButton("Menü")
+        self.menu_button.setStyleSheet("""
             QPushButton {
                 padding: 10px;
                 font-size: 14px;
@@ -50,12 +37,12 @@ class MainWindow(QMainWindow):
                 color: white;
                 border: none;
                 border-radius: 5px;
-                border: 1px solid #2E7D32;
+                border: 1px solid #4E565A;
             }
             
             QPushButton:hover {
-                background-color: #34A853;
-                border: 1px solid #2E7D32;
+                background-color: #4E565A;
+                border: 1px solid #4E565A;
                 border-top: 2px solid #000000;
                 border-left: 2px solid #000000;
                 border-right: 2px solid #000000;
@@ -63,52 +50,47 @@ class MainWindow(QMainWindow):
                 border-radius: 6px;
                 padding: 9px;
             }
-        """
-        )
+        """)
         self.menu_button.clicked.connect(self.toggle_menu)
         layout.addWidget(self.menu_button, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         self.menu_frame = QFrame(self.central_widget)
         layout.addWidget(self.menu_frame)
-        # QSpacerItem ile menü frame'inin yüksekliğini ayarlayalım
-        spacer = QSpacerItem(50, 70, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         layout.addItem(spacer)
 
         self.setup_menu_frame()
         self.menu_frame.hide()
         self.menu_button.setFixedHeight(40)
-        self.menu_button.setFixedWidth(150)
-        self.menu_frame.setFixedHeight(800)
-        self.menu_frame.setFixedWidth(200)
-        self.max_menu_frame_width = (
-            200  # Menü frame'inin ulaşabileceği maksimum genişlik
-        )
-        self.max_menu_frame_height = 800
+        self.menu_button.setFixedWidth(100)
+        
+        self.max_menu_frame_width = 175
+        self.menu_frame.setFixedWidth(self.max_menu_frame_width)
+        self.max_menu_frame_height = 900
+        self.menu_frame.setFixedHeight(self.max_menu_frame_height)
+        self.menu_frame.setSizePolicy(
+        QSizePolicy.Expanding, QSizePolicy.Expanding)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-
-        # Ana pencere boyutu değiştiğinde menü frame'inin boyutunu güncelle
         new_width = min(self.central_widget.width(), self.max_menu_frame_width)
         self.menu_frame.setFixedWidth(new_width)
-        self.menu_frame.setFixedHeight(self.central_widget.height())
-
+        new_height = min(self.central_widget.height(), self.max_menu_frame_height)
+        self.menu_frame.setFixedHeight(new_height)
+        
     def setup_menu_frame(self):
         menu_layout = QVBoxLayout(self.menu_frame)
         self.menu_frame.setStyleSheet(
-            "background-color: #F0F0F0; border: 1px solid #CCCCCC; border-radius: 10px; padding: 10px;"
-        )
-        # menu_label = QLabel("Ana Menü")
-        # menu_label.setStyleSheet("font-size: 10px; font-weight: bold;")
-        # menu_layout.addWidget(menu_label, alignment=Qt.AlignLeft)
-        #
-        button_layout = (
-            QVBoxLayout()
-        )  # Butonların bulunacağı yeni bir layout oluşturuyoruz
+        "background-color: #D9DADA; border: 1px solid #5E5971; border-radius: 10px; padding: 10px;")
+        button_layout = QVBoxLayout()
+        
+        self.central_layout = QVBoxLayout(self.central_widget)
+
+        self.menu_frame.setSizePolicy(
+            QSizePolicy.Fixed, QSizePolicy.Expanding)
 
         button1 = QPushButton("Alt Pencere 1")
-        button1.setStyleSheet(
-            """
+        button1.setStyleSheet("""
             QPushButton {
                 padding: 10px;
                 font-size: 14px;
@@ -116,12 +98,12 @@ class MainWindow(QMainWindow):
                 color: white;
                 border: none;
                 border-radius: 5px;
-                border: 1px solid #2E7D32;
+                border: 1px solid #4E565A;
             }
             
             QPushButton:hover {
-                background-color: #34A853;
-                border: 1px solid #2E7D32;
+                background-color: #4E565A;
+                border: 1px solid #4E565A;
                 border-top: 2px solid #000000;
                 border-left: 2px solid #000000;
                 border-right: 2px solid #000000;
@@ -129,20 +111,16 @@ class MainWindow(QMainWindow):
                 border-radius: 6px;
                 padding: 9px;
             }
-        """
-        )
+        """)
         button1.clicked.connect(self.open_subwindow1)
-        button1.setCursor(
-            Qt.PointingHandCursor
-        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button1.setCursor(Qt.PointingHandCursor)  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
         button1.setObjectName("subbutton")  # Butonun adını belirtiyoruz
         button1.setFixedHeight(40)
         button1.setFixedWidth(150)
         button_layout.addWidget(button1, alignment=Qt.AlignLeft)
-
+        
         button2 = QPushButton("Alt Pencere 2")
-        button2.setStyleSheet(
-            """
+        button2.setStyleSheet("""
             QPushButton {
                 padding: 10px;
                 font-size: 14px;
@@ -150,12 +128,12 @@ class MainWindow(QMainWindow):
                 color: white;
                 border: none;
                 border-radius: 5px;
-                border: 1px solid #2E7D32;
+                border: 1px solid #4E565A;
             }
             
             QPushButton:hover {
-                background-color: #34A853;
-                border: 1px solid #2E7D32;
+                background-color: #4E565A;
+                border: 1px solid #4E565A;
                 border-top: 2px solid #000000;
                 border-left: 2px solid #000000;
                 border-right: 2px solid #000000;
@@ -163,19 +141,15 @@ class MainWindow(QMainWindow):
                 border-radius: 6px;
                 padding: 9px;
             }
-        """
-        )
+        """)
         button2.clicked.connect(self.open_subwindow2)
-        button2.setCursor(
-            Qt.PointingHandCursor
-        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button2.setCursor(Qt.PointingHandCursor)  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
         button2.setFixedHeight(40)
         button2.setFixedWidth(150)
         button_layout.addWidget(button2, alignment=Qt.AlignLeft)
 
         button3 = QPushButton("Alt Pencere 3")
-        button3.setStyleSheet(
-            """
+        button3.setStyleSheet("""
             QPushButton {
                 padding: 10px;
                 font-size: 14px;
@@ -183,12 +157,12 @@ class MainWindow(QMainWindow):
                 color: white;
                 border: none;
                 border-radius: 5px;
-                border: 1px solid #2E7D32;
+                border: 1px solid #4E565A;
             }
             
             QPushButton:hover {
-                background-color: #34A853;
-                border: 1px solid #2E7D32;
+                background-color: #4E565A;
+                border: 1px solid #4E565A;
                 border-top: 2px solid #000000;
                 border-left: 2px solid #000000;
                 border-right: 2px solid #000000;
@@ -196,19 +170,15 @@ class MainWindow(QMainWindow):
                 border-radius: 6px;
                 padding: 9px;
             }
-        """
-        )
+        """)
         button3.clicked.connect(self.open_subwindow3)
-        button3.setCursor(
-            Qt.PointingHandCursor
-        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button3.setCursor(Qt.PointingHandCursor)  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
         button3.setFixedHeight(40)
         button3.setFixedWidth(150)
         button_layout.addWidget(button3, alignment=Qt.AlignLeft)
 
         button4 = QPushButton("Alt Pencere 4")
-        button4.setStyleSheet(
-            """
+        button4.setStyleSheet("""
             QPushButton {
                 padding: 10px;
                 font-size: 14px;
@@ -216,12 +186,12 @@ class MainWindow(QMainWindow):
                 color: white;
                 border: none;
                 border-radius: 5px;
-                border: 1px solid #2E7D32;
+                border: 1px solid #4E565A;
             }
             
             QPushButton:hover {
-                background-color: #34A853;
-                border: 1px solid #2E7D32;
+                background-color: #4E565A;
+                border: 1px solid #4E565A;
                 border-top: 2px solid #000000;
                 border-left: 2px solid #000000;
                 border-right: 2px solid #000000;
@@ -229,19 +199,14 @@ class MainWindow(QMainWindow):
                 border-radius: 6px;
                 padding: 9px;
             }
-        """
-        )
+        """)
         button4.clicked.connect(self.open_subwindow4)
-        button4.setCursor(
-            Qt.PointingHandCursor
-        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button4.setCursor(Qt.PointingHandCursor)  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
         button4.setFixedHeight(40)
         button4.setFixedWidth(150)
         button_layout.addWidget(button4, alignment=Qt.AlignLeft)
 
-        menu_layout.addLayout(
-            button_layout
-        )  # Yeni buton layout'unu ana menü layout'una ekliyoruz
+        menu_layout.addLayout(button_layout)  # Yeni buton layout'unu ana menü layout'una ekliyoruz
 
     def show_content_frame(self):
         pass  # İçerik sayfasını burada gösterme
