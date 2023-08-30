@@ -1,5 +1,5 @@
 import sys
-from PySide2.QtCore import Qt  # Bu satırı ekledik
+from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -8,15 +8,19 @@ from PySide2.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QFrame,
-    QGridLayout,
+    QDialog,
+    QDesktopWidget,
+    QSpacerItem,
+    QSizePolicy,
 )
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Şık Ana Pencere")
-        self.setGeometry(100, 100, 800, 500)
+        self.setWindowTitle("Ana Pencere")
+        self.setGeometry(100, 100, 1800, 1000)
+        self.center_on_screen()
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
@@ -24,46 +28,266 @@ class MainWindow(QMainWindow):
 
         self.init_ui()
 
+    def center_on_screen(self):
+        screen_geometry = QDesktopWidget().screenGeometry()
+        window_geometry = self.geometry()
+
+        x = (screen_geometry.width() - window_geometry.width()) // 2
+        y = (screen_geometry.height() - window_geometry.height()) // 2
+
+        self.move(x, y)
+
     def init_ui(self):
-        layout = QGridLayout(self.central_widget)
+        layout = QVBoxLayout(self.central_widget)
+
+        self.menu_button = QPushButton("Ana Menü")
+        self.menu_button.setStyleSheet(
+            """
+            QPushButton {
+                padding: 10px;
+                font-size: 14px;
+                background-color: #4285F4;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                border: 1px solid #2E7D32;
+            }
+            
+            QPushButton:hover {
+                background-color: #34A853;
+                border: 1px solid #2E7D32;
+                border-top: 2px solid #000000;
+                border-left: 2px solid #000000;
+                border-right: 2px solid #000000;
+                border-bottom: 2px solid #000000;
+                border-radius: 6px;
+                padding: 9px;
+            }
+        """
+        )
+        self.menu_button.clicked.connect(self.toggle_menu)
+        layout.addWidget(self.menu_button, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         self.menu_frame = QFrame(self.central_widget)
-        self.content_frame = QFrame(self.central_widget)
+        layout.addWidget(self.menu_frame)
+        # QSpacerItem ile menü frame'inin yüksekliğini ayarlayalım
+        spacer = QSpacerItem(50, 70, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        layout.addItem(spacer)
 
-        layout.addWidget(self.menu_frame, 0, 0)
-        layout.addWidget(self.content_frame, 0, 1)
+        self.setup_menu_frame()
+        self.menu_frame.hide()
+        self.menu_button.setFixedHeight(40)
+        self.menu_button.setFixedWidth(150)
+        self.menu_frame.setFixedHeight(800)
+        self.menu_frame.setFixedWidth(200)
+        self.max_menu_frame_width = (
+            200  # Menü frame'inin ulaşabileceği maksimum genişlik
+        )
+        self.max_menu_frame_height = 800
 
-        self.show_menu_frame()
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
 
-    def show_menu_frame(self):
-        self.menu_frame.show()
-        self.content_frame.hide()
+        # Ana pencere boyutu değiştiğinde menü frame'inin boyutunu güncelle
+        new_width = min(self.central_widget.width(), self.max_menu_frame_width)
+        self.menu_frame.setFixedWidth(new_width)
+        self.menu_frame.setFixedHeight(self.central_widget.height())
 
+    def setup_menu_frame(self):
         menu_layout = QVBoxLayout(self.menu_frame)
+        self.menu_frame.setStyleSheet(
+            "background-color: #F0F0F0; border: 1px solid #CCCCCC; border-radius: 10px; padding: 10px;"
+        )
+        # menu_label = QLabel("Ana Menü")
+        # menu_label.setStyleSheet("font-size: 10px; font-weight: bold;")
+        # menu_layout.addWidget(menu_label, alignment=Qt.AlignLeft)
+        #
+        button_layout = (
+            QVBoxLayout()
+        )  # Butonların bulunacağı yeni bir layout oluşturuyoruz
 
-        menu_label = QLabel("Ana Menü")
-        menu_label.setStyleSheet("font-size: 18px; font-weight: bold;")
-        menu_layout.addWidget(menu_label, alignment=Qt.AlignCenter)
+        button1 = QPushButton("Alt Pencere 1")
+        button1.setStyleSheet(
+            """
+            QPushButton {
+                padding: 10px;
+                font-size: 14px;
+                background-color: #4285F4;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                border: 1px solid #2E7D32;
+            }
+            
+            QPushButton:hover {
+                background-color: #34A853;
+                border: 1px solid #2E7D32;
+                border-top: 2px solid #000000;
+                border-left: 2px solid #000000;
+                border-right: 2px solid #000000;
+                border-bottom: 2px solid #000000;
+                border-radius: 6px;
+                padding: 9px;
+            }
+        """
+        )
+        button1.clicked.connect(self.open_subwindow1)
+        button1.setCursor(
+            Qt.PointingHandCursor
+        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button1.setObjectName("subbutton")  # Butonun adını belirtiyoruz
+        button1.setFixedHeight(40)
+        button1.setFixedWidth(150)
+        button_layout.addWidget(button1, alignment=Qt.AlignLeft)
 
-        content_button = QPushButton("İçerik Sayfasına Git")
-        content_button.setStyleSheet("padding: 10px; font-size: 14px;")
-        content_button.clicked.connect(self.show_content_frame)
-        menu_layout.addWidget(content_button, alignment=Qt.AlignCenter)
+        button2 = QPushButton("Alt Pencere 2")
+        button2.setStyleSheet(
+            """
+            QPushButton {
+                padding: 10px;
+                font-size: 14px;
+                background-color: #4285F4;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                border: 1px solid #2E7D32;
+            }
+            
+            QPushButton:hover {
+                background-color: #34A853;
+                border: 1px solid #2E7D32;
+                border-top: 2px solid #000000;
+                border-left: 2px solid #000000;
+                border-right: 2px solid #000000;
+                border-bottom: 2px solid #000000;
+                border-radius: 6px;
+                padding: 9px;
+            }
+        """
+        )
+        button2.clicked.connect(self.open_subwindow2)
+        button2.setCursor(
+            Qt.PointingHandCursor
+        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button2.setFixedHeight(40)
+        button2.setFixedWidth(150)
+        button_layout.addWidget(button2, alignment=Qt.AlignLeft)
+
+        button3 = QPushButton("Alt Pencere 3")
+        button3.setStyleSheet(
+            """
+            QPushButton {
+                padding: 10px;
+                font-size: 14px;
+                background-color: #4285F4;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                border: 1px solid #2E7D32;
+            }
+            
+            QPushButton:hover {
+                background-color: #34A853;
+                border: 1px solid #2E7D32;
+                border-top: 2px solid #000000;
+                border-left: 2px solid #000000;
+                border-right: 2px solid #000000;
+                border-bottom: 2px solid #000000;
+                border-radius: 6px;
+                padding: 9px;
+            }
+        """
+        )
+        button3.clicked.connect(self.open_subwindow3)
+        button3.setCursor(
+            Qt.PointingHandCursor
+        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button3.setFixedHeight(40)
+        button3.setFixedWidth(150)
+        button_layout.addWidget(button3, alignment=Qt.AlignLeft)
+
+        button4 = QPushButton("Alt Pencere 4")
+        button4.setStyleSheet(
+            """
+            QPushButton {
+                padding: 10px;
+                font-size: 14px;
+                background-color: #4285F4;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                border: 1px solid #2E7D32;
+            }
+            
+            QPushButton:hover {
+                background-color: #34A853;
+                border: 1px solid #2E7D32;
+                border-top: 2px solid #000000;
+                border-left: 2px solid #000000;
+                border-right: 2px solid #000000;
+                border-bottom: 2px solid #000000;
+                border-radius: 6px;
+                padding: 9px;
+            }
+        """
+        )
+        button4.clicked.connect(self.open_subwindow4)
+        button4.setCursor(
+            Qt.PointingHandCursor
+        )  # Farenin üzerine geldiğinde işaretçi şeklini değiştir
+        button4.setFixedHeight(40)
+        button4.setFixedWidth(150)
+        button_layout.addWidget(button4, alignment=Qt.AlignLeft)
+
+        menu_layout.addLayout(
+            button_layout
+        )  # Yeni buton layout'unu ana menü layout'una ekliyoruz
 
     def show_content_frame(self):
-        self.menu_frame.hide()
-        self.content_frame.show()
+        pass  # İçerik sayfasını burada gösterme
 
-        content_layout = QVBoxLayout(self.content_frame)
+    def open_subwindow1(self):
+        sub_window = SubWindow(self, "Alt Pencere 1")
+        sub_window.show()
 
-        label = QLabel("İçerik Sayfası")
-        label.setStyleSheet("font-size: 18px; font-weight: bold;")
-        content_layout.addWidget(label, alignment=Qt.AlignCenter)
+    def open_subwindow2(self):
+        sub_window = SubWindow(self, "Alt Pencere 2")
+        sub_window.show()
 
-        back_button = QPushButton("Menüye Geri Dön")
-        back_button.setStyleSheet("padding: 10px; font-size: 14px;")
-        back_button.clicked.connect(self.show_menu_frame)
-        content_layout.addWidget(back_button, alignment=Qt.AlignCenter)
+    def open_subwindow3(self):
+        sub_window = SubWindow(self, "Alt Pencere 3")
+        sub_window.show()
+
+    def open_subwindow4(self):
+        sub_window = SubWindow(self, "Alt Pencere 4")
+        sub_window.show()
+
+    def toggle_menu(self):
+        if self.menu_frame.isHidden():
+            self.menu_frame.show()
+        else:
+            self.menu_frame.hide()
+
+
+class SubWindow(QDialog):
+    def __init__(self, parent=None, title="Alt Pencere"):
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        self.setGeometry(0, 0, 1500, 1000)
+        self.center_on_screen()
+
+        layout = QVBoxLayout(self)
+        label = QLabel(f"{title}: Bu alt pencere bir butona tıklanarak açıldı.")
+        layout.addWidget(label)
+
+    def center_on_screen(self):
+        screen_geometry = QDesktopWidget().screenGeometry()
+        window_geometry = self.geometry()
+
+        x = (screen_geometry.width() - window_geometry.width()) // 2
+        y = (screen_geometry.height() - window_geometry.height()) // 2
+
+        self.move(x, y)
 
 
 def main():
