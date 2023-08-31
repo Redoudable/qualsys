@@ -2,7 +2,6 @@ import sys
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget, QFrame, QDialog, QDesktopWidget, QSpacerItem, QSizePolicy
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -62,9 +61,9 @@ class MainWindow(QMainWindow):
         self.setup_menu_frame()
         self.menu_frame.hide()
         self.menu_button.setFixedHeight(40)
-        self.menu_button.setFixedWidth(100)
+        self.menu_button.setFixedWidth(200)
         
-        self.max_menu_frame_width = 175
+        self.max_menu_frame_width = 200
         self.menu_frame.setFixedWidth(self.max_menu_frame_width)
         self.max_menu_frame_height = 900
         self.menu_frame.setFixedHeight(self.max_menu_frame_height)
