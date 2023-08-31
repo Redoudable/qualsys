@@ -143,7 +143,7 @@ class UserInterfaceGUI(QMainWindow):
     QCheckBox::indicator:checked {
         background-color: None;
         border-radius: 6px;
-        image: url(C://Users//DUR//Desktop//postgresql//exam3//check.png);
+        image: url(check.png);
     }
 """
         )
