@@ -1,15 +1,10 @@
 import sys
-from PySide2.QtWidgets import QApplication
-from view import UserInterfaceGUI
-from management import DatabaseManager
 
-
-def main():
-    app = QApplication(sys.argv)
-    ui = UserInterfaceGUI()
-    ui.show()
-    sys.exit(app.exec_())
+from controllers import MainController
 
 
 if __name__ == "__main__":
-    main()
+    controller = MainController(sys.argv)
+    controller.run()
+
+    sys.exit()

@@ -3,6 +3,7 @@ import psycopg2
 
 class DatabaseManager:
     def __init__(self):
+        self.conn = None
         self.conn = psycopg2.connect(
             host="127.0.0.1",
             port="5432",
@@ -168,8 +169,3 @@ class DatabaseManager:
 
     def __del__(self):
         self.close_connection()
-
-
-if __name__ == "__main__":
-    db_manager = DatabaseManager()
-    # İşlemleri burada gerçekleştirin

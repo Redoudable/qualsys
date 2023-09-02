@@ -1,9 +1,19 @@
-from management import DatabaseManager
+from PySide2.QtWidgets import QApplication
+
+from core.management import DatabaseManager
+from view import Qualsys
 
 
-class Controller:
-    def __init__(self):
+class MainController:
+    def __init__(self, argv: list) -> None:
+        self.app = QApplication(argv)
         self.manager = DatabaseManager()
+        self.view = Qualsys()
+
+    def run(self) -> int:
+        self.view.show()
+        
+        return self.app.exec_()
 
     def list_documents(self):
         self.manager.list_documents()
